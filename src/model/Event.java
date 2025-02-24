@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
-public class Evento implements Serializable {
+public class Event implements Serializable {
     private String id;
     private String name;
     private LocalDateTime date;
