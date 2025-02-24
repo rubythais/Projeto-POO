@@ -1,6 +1,7 @@
 package model;
+import java.io.Serializable;
 
-public class LoteIngresso {
+public class LoteIngresso implements Serializable {
     private String id;
     private int quantidade;
     private double preco;
