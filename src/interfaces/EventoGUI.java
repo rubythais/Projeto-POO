@@ -4,30 +4,47 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import model.*;
+import service.Relatorio;
+import utils.Validador;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventoGUI extends Application {
-    private GerenciadorEvento gerenciador;
+    private List<Evento> eventos = new ArrayList<>();
+    private List<Participante> participantes = new ArrayList<>();
+    private List<Palestrante> palestrantes = new ArrayList<>();
     private TextArea logArea;
 
     @Override
     public void start(Stage primaryStage) {
-        gerenciador = new GerenciadorEvento();
-        
         primaryStage.setTitle("Sistema de Gerenciamento de Eventos");
         
         TabPane tabPane = new TabPane();
         
+        Tab eventosTab = new Tab("Eventos");
+        eventosTab.setContent(criarTelaEventos());
+        
         Tab participantesTab = new Tab("Participantes");
-        participantesTab.setClosable(false);
         participantesTab.setContent(criarTelaParticipantes());
         
+        Tab palestrantesTab = new Tab("Palestrantes");
+        palestrantesTab.setContent(criarTelaPalestrantes());
+        
+        Tab ingressosTab = new Tab("Ingressos");
+        ingressosTab.setContent(criarTelaIngressos());
+        
         Tab certificadosTab = new Tab("Certificados");
-        certificadosTab.setClosable(false);
         certificadosTab.setContent(criarTelaCertificados());
         
-        tabPane.getTabs().addAll(participantesTab, certificadosTab);
+        Tab relatoriosTab = new Tab("Relatórios");
+        relatoriosTab.setContent(criarTelaRelatorios());
         
-
+        tabPane.getTabs().addAll(eventosTab, participantesTab, palestrantesTab, ingressosTab, certificadosTab, relatoriosTab);
+        
         logArea = new TextArea();
         logArea.setEditable(false);
         logArea.setPrefRowCount(5);
@@ -36,82 +53,70 @@ public class EventoGUI extends Application {
         mainLayout.setPadding(new Insets(10));
         mainLayout.getChildren().addAll(tabPane, new Label("Log de Operações:"), logArea);
         
-        Scene scene = new Scene(mainLayout, 600, 500);
+        Scene scene = new Scene(mainLayout, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private VBox criarTelaParticipantes() {
+    private VBox criarTelaEventos() {
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
 
         TextField nomeField = new TextField();
-        nomeField.setPromptText("Nome do Participante");
+        nomeField.setPromptText("Nome do Evento");
         
-        TextField emailField = new TextField();
-        emailField.setPromptText("Email do Participante");
+        TextField localField = new TextField();
+        localField.setPromptText("Local do Evento");
         
-        Button cadastrarButton = new Button("Cadastrar Participante");
-        cadastrarButton.setOnAction(e -> {
-            String nome = nomeField.getText().trim();
-            String email = emailField.getText().trim();
-            
-            if (!nome.isEmpty() && !email.isEmpty()) {
-                gerenciador.cadastrarParticipante(nome, email);
-                logArea.appendText("Participante cadastrado: " + nome + "\n");
+        TextField capacidadeField = new TextField();
+        capacidadeField.setPromptText("Capacidade Máxima");
+        
+        TextField dataField = new TextField();
+        dataField.setPromptText("Data (dd/MM/yyyy HH:mm)");
+        
+        Button criarButton = new Button("Criar Evento");
+        criarButton.setOnAction(e -> {
+            try {
+                String nome = nomeField.getText();
+                String local = localField.getText();
+                int capacidade = Integer.parseInt(capacidadeField.getText());
+                LocalDateTime data = LocalDateTime.parse(dataField.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                
+                Evento evento = new Evento(nome, local, capacidade, data);
+                eventos.add(evento);
+                logArea.appendText("Evento criado: " + nome + "\n");
+                
                 nomeField.clear();
-                emailField.clear();
-            } else {
-                logArea.appendText("Erro: Preencha todos os campos!\n");
+                localField.clear();
+                capacidadeField.clear();
+                dataField.clear();
+            } catch (Exception ex) {
+                logArea.appendText("Erro ao criar evento: " + ex.getMessage() + "\n");
             }
         });
 
-        ListView<String> participantesList = new ListView<>();
-        atualizarListaParticipantes(participantesList);
+        ListView<String> eventosList = new ListView<>();
+        atualizarListaEventos(eventosList);
 
         layout.getChildren().addAll(
             new Label("Nome:"), nomeField,
-            new Label("Email:"), emailField,
-            cadastrarButton,
-            new Label("Participantes Cadastrados:"),
-            participantesList
+            new Label("Local:"), localField,
+            new Label("Capacidade:"), capacidadeField,
+            new Label("Data:"), dataField,
+            criarButton,
+            new Label("Eventos Cadastrados:"),
+            eventosList
         );
 
         return layout;
     }
 
-    private VBox criarTelaCertificados() {
-        VBox layout = new VBox(10);
-        layout.setPadding(new Insets(10));
 
-        TextField nomeBuscaField = new TextField();
-        nomeBuscaField.setPromptText("Nome do Participante");
 
-        Button emitirButton = new Button("Emitir Certificado");
-        emitirButton.setOnAction(e -> {
-            String nome = nomeBuscaField.getText().trim();
-            if (!nome.isEmpty()) {
-                gerenciador.emitirCertificado(nome);
-                logArea.appendText("Tentativa de emissão de certificado para: " + nome + "\n");
-                nomeBuscaField.clear();
-            } else {
-                logArea.appendText("Erro: Digite o nome do participante!\n");
-            }
-        });
-
-        layout.getChildren().addAll(
-            new Label("Nome do Participante:"),
-            nomeBuscaField,
-            emitirButton
-        );
-
-        return layout;
-    }
-
-    private void atualizarListaParticipantes(ListView<String> listView) {
+    private void atualizarListaEventos(ListView<String> listView) {
         listView.getItems().clear();
-        for (Participante p : gerenciador.getParticipantes()) {
-            listView.getItems().add(p.getNome() + " - " + p.getEmail());
+        for (Evento e : eventos) {
+            listView.getItems().add(e.getNome() + " - " + e.getLocal() + " - " + e.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         }
     }
 
