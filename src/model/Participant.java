@@ -2,8 +2,9 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Participant extends User {
+public class Participant implements Serializable {
     private List<Event> registeredEvents;
 
     public Participant(String name, String email, String cpf) {
