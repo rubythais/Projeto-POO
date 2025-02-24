@@ -3,8 +3,9 @@ package model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Event {
+public class Evento implements Serializable {
     private String id;
     private String name;
     private LocalDateTime date;
