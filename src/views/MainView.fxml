@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.MainController">
+    <top>
+        <Label text="Sistema de Gerenciamento de Eventos" />
+    </top>
+    <center>
+        <VBox spacing="10" alignment="CENTER">
+            <Button text="Criar novo evento" onAction="#handleCriarEvento" />
+            <Button text="Cadastrar participante" onAction="#handleCadastrarParticipante" />
+            <Button text="Cadastrar palestrante" onAction="#handleCadastrarPalestrante" />
+            <Button text="Criar lote de ingressos" onAction="#handleCriarLoteIngressos" />
+            <Button text="Vender ingresso" onAction="#handleVenderIngresso" />
+            <Button text="Gerar certificado" onAction="#handleGerarCertificado" />
+            <Button text="Gerar relatórios" onAction="#handleGerarRelatorios" />
+            <Button text="Sair" onAction="#handleSair" />
+        </VBox>
+    </center>
+</BorderPane>
