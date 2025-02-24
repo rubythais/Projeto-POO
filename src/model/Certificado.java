@@ -4,7 +4,7 @@ import interfaces.Emissivel;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
-public class Evento implements Serializable {
+public class Certificado implements Serializable {
     
     private String id;
     private Participante participante;
