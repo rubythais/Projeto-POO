@@ -1,8 +1,9 @@
 package model;
 
 import interfaces.Validavel;
+import java.io.Serializable;
 
-public class Ingresso implements Validavel {
+public class Evento implements Serializable {
     private String id;
     private double preco;
     private Evento evento;
