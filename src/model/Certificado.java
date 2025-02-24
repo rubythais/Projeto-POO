@@ -2,8 +2,10 @@ package model;
 
 import interfaces.Emissivel;
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
-public class Certificado implements Emissivel {
+public class Evento implements Serializable {
+    
     private String id;
     private Participante participante;
     private Evento evento;
@@ -18,12 +20,11 @@ public class Certificado implements Emissivel {
 
     @Override
     public void emitir() {
-        // Implementação da emissão do certificado
         System.out.println("Certificado emitido para " + participante.getNome() + 
                           " referente ao evento " + evento.getNome());
     }
 
-    // Getters
+   
     public String getId() { return id; }
     public Participante getParticipante() { return participante; }
     public Evento getEvento() { return evento; }
