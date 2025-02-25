@@ -1,8 +1,9 @@
 package model;
 
 import interfaces.Validavel;
+import java.io.Serializable;
 
-public abstract class Usuario implements Validavel {
+public class Usuario implements Serializable {
     private String id;
     private String nome;
     private String email;
