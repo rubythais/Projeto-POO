@@ -4,9 +4,8 @@ import interfaces.Validavel;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
 
-public class Evento implements Serializable {
+public class Evento implements Validavel {
     private String id;
     private String nome;
     private LocalDateTime data;
@@ -30,7 +29,7 @@ public class Evento implements Serializable {
     }
 
     public boolean adicionarParticipante(Participante participante) {
-        if (participantes.size() < capacidadeMaxima) {
+        if (participantes.size() < capacidadeMaxima && !participantes.contains(participante)) {
             participantes.add(participante);
             return true;
         }
@@ -61,6 +60,8 @@ public class Evento implements Serializable {
             Ingresso ingresso = new Ingresso(lote.getPreco(), this, participante, lote);
             ingressos.add(ingresso);
             lote.diminuirQuantidade();
+            this.adicionarParticipante(participante);
+            participante.inscreverEmEvento(this);
             return ingresso;
         }
         return null;
@@ -73,6 +74,10 @@ public class Evento implements Serializable {
         return null;
     }
 
+    public boolean verificarParticipante(Participante participante) {
+        return participantes.contains(participante);
+    }
+
     @Override
     public boolean validar() {
         return nome != null && !nome.isEmpty() && 
@@ -81,7 +86,6 @@ public class Evento implements Serializable {
                capacidadeMaxima > 0;
     }
 
-    // Getters e Setters
     public String getId() { return id; }
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
@@ -94,4 +98,3 @@ public class Evento implements Serializable {
     public List<Palestrante> getPalestrantes() { return new ArrayList<>(palestrantes); }
     public List<LoteIngresso> getLotes() { return new ArrayList<>(lotes); }
 }
-
