@@ -3,9 +3,9 @@ package model;
 import interfaces.Validavel;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
-public class Evento implements Validavel {
+public class Evento implements Serializable {
     private String id;
     private String nome;
     private LocalDateTime data;
