@@ -1,9 +1,9 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.List;
+impoimport java.io.Serializable;
 
-public class Participante extends Usuario {
+public class Participante implements Serializable {
     private List<Evento> eventosInscritos;
     private List<Certificado> certificados;
 
