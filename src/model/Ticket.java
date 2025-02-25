@@ -1,6 +1,7 @@
 package model;
+import java.io.Serializable;
 
-public class Ticket {
+public class Ticket implements Serializable {
     private String id;
     private TicketType type;
     private double price;
