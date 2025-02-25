@@ -28,7 +28,7 @@ public class Main {
             System.out.print("Escolha uma opção: ");
 
             int opcao = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
 
             switch (opcao) {
                 case 1:
@@ -61,7 +61,7 @@ public class Main {
         }
     }
 
-   private static void criarEvento() {
+    private static void criarEvento() {
         System.out.println("\n=== Criar Novo Evento ===");
         System.out.print("Nome do evento: ");
         String nome = scanner.nextLine();
@@ -73,16 +73,15 @@ public class Main {
         int capacidade = scanner.nextInt();
         scanner.nextLine();
 
-        LocalDateTime data = null;
-        while (data == null) {
-            System.out.print("Data (dd/MM/yyyy HH:mm): ");
-            String dataStr = scanner.nextLine();
-            try {
-                data = LocalDateTime.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-            } catch (DateTimeParseException e) {
-                System.out.println("Formato de data inválido! Certifique-se de seguir o formato correto. Exemplo: 25/12/2025 18:30 🕕");
-            }
-        }
+        System.out.print("Data (dd/MM/yyyy HH:mm): ");
+        String dataStr = scanner.nextLine();
+        LocalDateTime data = LocalDateTime.parse(dataStr, 
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
+        Evento evento = new Evento(nome, data, local, capacidade);
+        eventos.add(evento);
+        System.out.println("Evento criado com sucesso! ID: " + evento.getId());
+    }
 
     private static void cadastrarParticipante() {
         System.out.println("\n=== Cadastrar Participante ===");
@@ -149,7 +148,7 @@ public class Main {
 
         System.out.print("Selecione o evento: ");
         int eventoIndex = scanner.nextInt();
-        scanner.nextLine(); 
+        scanner.nextLine();
 
         if (eventoIndex >= 0 && eventoIndex < eventos.size()) {
             Evento evento = eventos.get(eventoIndex);
@@ -217,6 +216,7 @@ public class Main {
                     Ingresso ingresso = evento.venderIngresso(participante, lote);
                     if (ingresso != null) {
                         System.out.println("Ingresso vendido com sucesso! ID: " + ingresso.getId());
+                        System.out.println("Participante inscrito no evento com sucesso!");
                     } else {
                         System.out.println("Não foi possível vender o ingresso!");
                     }
@@ -250,6 +250,8 @@ public class Main {
             Evento evento = eventos.get(eventoIndex);
             List<Participante> participantesEvento = evento.getParticipantes();
 
+            System.out.println("\nTotal de participantes no evento: " + participantesEvento.size());
+            
             if (participantesEvento.isEmpty()) {
                 System.out.println("Não há participantes neste evento!");
                 return;
@@ -265,12 +267,17 @@ public class Main {
 
             if (participanteIndex >= 0 && participanteIndex < participantesEvento.size()) {
                 Participante participante = participantesEvento.get(participanteIndex);
-                Certificado certificado = evento.gerarCertificado(participante);
-                if (certificado != null) {
-                    certificado.emitir();
-                    participante.adicionarCertificado(certificado);
+                if (evento.verificarParticipante(participante)) {
+                    Certificado certificado = evento.gerarCertificado(participante);
+                    if (certificado != null) {
+                        certificado.emitir();
+                        participante.adicionarCertificado(certificado);
+                        System.out.println("Certificado gerado e registrado com sucesso!");
+                    } else {
+                        System.out.println("Não foi possível gerar o certificado!");
+                    }
                 } else {
-                    System.out.println("Não foi possível gerar o certificado!");
+                    System.out.println("Este participante não está inscrito no evento!");
                 }
             } else {
                 System.out.println("Participante inválido!");
@@ -293,7 +300,7 @@ public class Main {
         System.out.print("Escolha uma opção: ");
 
         int opcao = scanner.nextInt();
-        scanner.nextLine(); 
+        scanner.nextLine();
 
         System.out.println("\nEventos disponíveis:");
         for (int i = 0; i < eventos.size(); i++) {
@@ -324,4 +331,3 @@ public class Main {
         }
     }
 }
-
