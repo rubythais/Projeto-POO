@@ -2,8 +2,9 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Speaker extends User {
+public class Speaker implements Serializable {
     private String specialty;
     private List<Event> speakingEvents;
 
